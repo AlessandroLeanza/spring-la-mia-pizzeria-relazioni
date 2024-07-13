@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.model.Pizza;
+import com.example.demo.model.Sale;
 import com.example.demo.repository.PizzaRepository;
+import com.example.demo.repository.SaleRepository;
 
 import jakarta.validation.Valid;
 
@@ -22,11 +24,14 @@ import jakarta.validation.Valid;
 public class PizzaController {
 	
 	@Autowired
-	private PizzaRepository repository;
+	private PizzaRepository pizzaRepository;
+	
+	@Autowired
+	private SaleRepository saleRepository;
 	
 	@GetMapping
 	public String index(Model model) {
-		List <Pizza> pizzeList = repository.findAll();
+		List <Pizza> pizzeList = pizzaRepository.findAll();
 		model.addAttribute("list", pizzeList);
 		return "/Pizza/index";
 	}
@@ -45,7 +50,7 @@ public class PizzaController {
             return "/Pizza/create";
         }
 
-        repository.save(pizzaForm);
+        pizzaRepository.save(pizzaForm);
 
         return "redirect:/pizza";
 
@@ -53,14 +58,14 @@ public class PizzaController {
 	
 	@GetMapping ("/show/{id}")
 	public String show(@PathVariable ("id")Integer id, Model model) {
-		model.addAttribute("show", repository.getReferenceById(id));
+		model.addAttribute("show", pizzaRepository.getReferenceById(id));
 		return "Pizza/show";
 	}
 	
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Integer id, Model model) {
 		
-		model.addAttribute("pizza", repository.getReferenceById(id));
+		model.addAttribute("pizza", pizzaRepository.getReferenceById(id));
 		
 		return "/pizza/edit";
 	}
@@ -75,7 +80,7 @@ public class PizzaController {
 			return "/pizza/edit";
 		}
 		
-		repository.save(pizza);
+		pizzaRepository.save(pizza);
 		
 		return "redirect:/pizza";
 	}
@@ -83,8 +88,20 @@ public class PizzaController {
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id) {
 		
-		repository.deleteById(id);
+		pizzaRepository.deleteById(id);
 		
 		return "redirect:/pizza";
+	}
+	
+	@GetMapping("/{id}/sale")
+	public String getSale (@PathVariable("id") Integer id, Model model) {
+		Pizza pizza = pizzaRepository.findById(id).get();
+		Sale sale = new Sale();
+		sale.setPizza(pizza);
+		
+		model.addAttribute("sale", sale);
+		
+		return "/Pizza/index";
+				
 	}
 }

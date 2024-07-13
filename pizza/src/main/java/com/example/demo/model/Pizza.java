@@ -1,10 +1,13 @@
 package com.example.demo.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +32,9 @@ public class Pizza {
 	@NotNull (message = "Non puoi lasciare il campo vuoto")
 	@Column (name = "prezzo")
 	private Double prezzo;
+	
+	@OneToMany(mappedBy = "pizza")
+	private List<Sale> sale;
 
 	public Integer getId() {
 		return id;
@@ -60,6 +66,14 @@ public class Pizza {
 
 	public void setPrezzo(Double prezzo) {
 		this.prezzo = prezzo;
+	}
+
+	public List<Sale> getSale() {
+		return sale;
+	}
+
+	public void setSale(List<Sale> sale) {
+		this.sale = sale;
 	}
 	
 	

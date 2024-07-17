@@ -71,8 +71,7 @@ public class PizzaController {
 	}
 	
 	@PostMapping("/edit/{id}")
-	public String update(
-			@Valid @ModelAttribute("pizza") Pizza pizza,
+	public String update(@Valid @ModelAttribute("pizza") Pizza pizza,
 			BindingResult bindingResult,
 			Model model) {
 		
@@ -93,7 +92,7 @@ public class PizzaController {
 		return "redirect:/pizza";
 	}
 	
-	@GetMapping("/{id}/sale")
+	@GetMapping("/sale/{id}")
 	public String getSale (@PathVariable("id") Integer id, Model model) {
 		Pizza pizza = pizzaRepository.findById(id).get();
 		Sale sale = new Sale();
@@ -103,5 +102,19 @@ public class PizzaController {
 		
 		return "/Pizza/index";
 				
+	}
+	
+	@PostMapping("/sale/{id}")
+	public String newSale(@Valid @ModelAttribute("sale") Sale sale,
+			BindingResult bindingResult,
+			Model model) {
+		
+		if(bindingResult.hasErrors()) {
+			return "/Pizza/index";
+		}
+		
+		saleRepository.save(sale);
+		
+		return "redirect:/pizza";
 	}
 }
